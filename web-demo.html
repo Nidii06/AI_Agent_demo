@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Platform - Conference Follow-up Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .demo-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        .demo-section h3 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI Agent Platform</h1>
+        <p style="text-align: center; color: #666; font-size: 18px;">
+            Conference Follow-up Campaign Demo
+        </p>
+
+        <div class="demo-section">
+            <h3>📋 Step 1: Get Conference Customers</h3>
+            <button onclick="getCustomers()">Get Customer List</button>
+            <div id="customers-output" class="output"></div>
+        </div>
+
+        <div class="demo-section">
+            <h3>📧 Step 2: Draft Email Campaign</h3>
+            <button onclick="draftCampaign()">Create Email Campaign</button>
+            <div id="campaign-output" class="output"></div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🚀 Step 3: Send Campaign Emails</h3>
+            <button onclick="sendEmails()">Send All Emails</button>
+            <div id="send-output" class="output"></div>
+        </div>
+
+        <div class="demo-section">
+            <h3>📊 Step 4: Monitor Responses</h3>
+            <button onclick="monitorResponses()">Check Responses</button>
+            <div id="monitor-output" class="output"></div>
+        </div>
+
+        <div class="demo-section">
+            <h3>🎯 Complete Campaign</h3>
+            <button onclick="runCompleteCampaign()" style="background: linear-gradient(45deg, #28a745, #20c997); font-size: 18px; padding: 15px 30px;">
+                Run Full Campaign
+            </button>
+            <div id="complete-output" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mock data
+        const customers = [
+            { id: 1, name: 'John Smith', email: 'john@techcorp.com', company: 'TechCorp', notes: 'Interested in DDoS protection' },
+            { id: 2, name: 'Sarah Johnson', email: 'sarah@startup.com', company: 'StartupXYZ', notes: 'Looking for CDN services' },
+            { id: 3, name: 'Mike Chen', email: 'mike@enterprise.com', company: 'Enterprise Inc', notes: 'Needs security solutions' },
+            { id: 4, name: 'Emily Davis', email: 'emily@retail.com', company: 'RetailGiant', notes: 'Interested in performance optimization' }
+        ];
+
+        function log(outputId, message, type = 'info') {
+            const output = document.getElementById(outputId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            output.innerHTML += `<span class="${className}">[${timestamp}] ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        async function getCustomers() {
+            const output = document.getElementById('customers-output');
+            output.innerHTML = '';
+            
+            log('customers-output', '🔍 Retrieving customers from Cloudflare Connect 2024...', 'info');
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            log('customers-output', `✅ Found ${customers.length} customers:`, 'success');
+            
+            customers.forEach(customer => {
+                log('customers-output', `   • ${customer.name} (${customer.company}) - ${customer.email}`, 'info');
+                log('customers-output', `     Notes: ${customer.notes}`, 'info');
+            });
+        }
+
+        async function draftCampaign() {
+            const output = document.getElementById('campaign-output');
+            output.innerHTML = '';
+            
+            log('campaign-output', '📝 Creating personalized email campaign...', 'info');
+            
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            log('campaign-output', '✅ Email template created:', 'success');
+            log('campaign-output', '', 'info');
+            log('campaign-output', 'Subject: Following up on our conversation at Cloudflare Connect 2024', 'info');
+            log('campaign-output', '', 'info');
+            log('campaign-output', 'Hi {{customerName}},', 'info');
+            log('campaign-output', '', 'info');
+            log('campaign-output', 'I hope this email finds you well! It was great meeting you at Cloudflare Connect 2024', 'info');
+            log('campaign-output', 'and learning about {{company}}\'s exciting initiatives.', 'info');
+            log('campaign-output', '', 'info');
+            log('campaign-output', '🔒 Security & DDoS Protection', 'info');
+            log('campaign-output', '🌐 Global CDN', 'info');
+            log('campaign-output', '⚡ Workers Platform', 'info');
+            log('campaign-output', '🤖 AI & Machine Learning', 'info');
+        }
+
+        async function sendEmails() {
+            const output = document.getElementById('send-output');
+            output.innerHTML = '';
+            
+            log('send-output', '📤 Starting email campaign...', 'info');
+            
+            for (let i = 0; i < customers.length; i++) {
+                const customer = customers[i];
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                log('send-output', `📧 Sending to ${customer.name} at ${customer.email}...`, 'info');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                log('send-output', `   ✅ Sent successfully (Message ID: ${Math.random().toString(36).substring(2)})`, 'success');
+            }
+            
+            log('send-output', '', 'info');
+            log('send-output', `🎉 Campaign completed! ${customers.length} emails sent successfully.`, 'success');
+        }
+
+        async function monitorResponses() {
+            const output = document.getElementById('monitor-output');
+            output.innerHTML = '';
+            
+            log('monitor-output', '👀 Monitoring campaign responses...', 'info');
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            const responses = [
+                { customer: 'John Smith', responded: true, interested: true, action: 'Schedule demo call' },
+                { customer: 'Sarah Johnson', responded: false, interested: null, action: 'Follow up in 3 days' },
+                { customer: 'Mike Chen', responded: true, interested: true, action: 'Send pricing info' },
+                { customer: 'Emily Davis', responded: false, interested: null, action: 'Follow up next week' }
+            ];
+            
+            log('monitor-output', '📊 Response Summary:', 'success');
+            log('monitor-output', `   Total Customers: ${responses.length}`, 'info');
+            log('monitor-output', `   Responded: ${responses.filter(r => r.responded).length}`, 'success');
+            log('monitor-output', `   Interested: ${responses.filter(r => r.interested).length}`, 'success');
+            log('monitor-output', '', 'info');
+            
+            responses.forEach(response => {
+                const status = response.responded ? (response.interested ? '✅' : '❌') : '⏳';
+                log('monitor-output', `   ${status} ${response.customer}: ${response.action}`, 'info');
+            });
+        }
+
+        async function runCompleteCampaign() {
+            const output = document.getElementById('complete-output');
+            output.innerHTML = '';
+            
+            log('complete-output', '🚀 Starting Complete Conference Follow-up Campaign...', 'info');
+            log('complete-output', '', 'info');
+            
+            // Step 1
+            log('complete-output', '📋 Step 1: Getting customers from conference...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            log('complete-output', `✅ Found ${customers.length} customers`, 'success');
+            
+            // Step 2
+            log('complete-output', '📧 Step 2: Creating email campaign...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            log('complete-output', '✅ Campaign created with personalized templates', 'success');
+            
+            // Step 3
+            log('complete-output', '📤 Step 3: Sending emails...', 'info');
+            for (const customer of customers) {
+                await new Promise(resolve => setTimeout(resolve, 300));
+                log('complete-output', `   📧 Sent to ${customer.name}`, 'info');
+            }
+            log('complete-output', `✅ All ${customers.length} emails sent successfully`, 'success');
+            
+            // Step 4
+            log('complete-output', '📊 Step 4: Monitoring responses...', 'info');
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            log('complete-output', '✅ Response tracking activated', 'success');
+            
+            log('complete-output', '', 'info');
+            log('complete-output', '🎉 COMPLETE CAMPAIGN SUCCESSFUL!', 'success');
+            log('complete-output', `📈 Results: ${customers.length} emails sent, response tracking active`, 'success');
+            log('complete-output', '', 'info');
+            log('complete-output', '✨ Your AI Agent Platform is working perfectly!', 'success');
+        }
+    </script>
+</body>
+</html>

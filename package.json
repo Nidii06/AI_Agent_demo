@@ -1,0 +1,25 @@
+{
+  "name": "ai-agent-platform",
+  "version": "1.0.0",
+  "description": "AI agents built with Cloudflare's official agents SDK",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": ["ai", "agents", "cloudflare", "workers", "llm"],
+  "author": "AI Agent Platform",
+  "license": "MIT",
+  "dependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "agents-sdk": "^0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^3.0.0"
+  }
+}

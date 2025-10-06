@@ -1,0 +1,17 @@
+name = "conference-followup-agent"
+main = "src/index.ts"
+compatibility_date = "2024-12-18"
+
+# Cloudflare AI binding
+[ai]
+binding = "AI"
+
+# KV namespace for agent state
+[[kv_namespaces]]
+binding = "AGENT_STATE"
+id = "your-kv-namespace-id"
+preview_id = "your-preview-kv-namespace-id"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "development"
