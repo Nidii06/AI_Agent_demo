@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Platform - Conference Follow-up Agent</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 800px;
+            width: 90%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .status.running {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.online {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .chat-container {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f8f9fa;
+        }
+        .message {
+            margin: 15px 0;
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message.user {
+            background: #007bff;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        .message.agent {
+            background: #e9ecef;
+            color: #333;
+            margin-right: auto;
+        }
+        .message.system {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            text-align: center;
+            margin: 10px auto;
+            max-width: 90%;
+            font-style: italic;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+        }
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .agent-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        .feature-icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .typing {
+            display: inline-block;
+            animation: typing 1.5s infinite;
+        }
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 AI Agent Platform</h1>
+            <h2>Conference Follow-up Agent</h2>
+            <div id="status" class="status running">🔄 Starting Agent...</div>
+        </div>
+
+        <div class="agent-info">
+            <h3>🚀 Agent Status</h3>
+            <p><strong>Name:</strong> Conference Follow-up Agent</p>
+            <p><strong>Platform:</strong> Cloudflare Workers AI</p>
+            <p><strong>Capabilities:</strong> Customer follow-up, email campaigns, response monitoring</p>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📋</div>
+                <h4>Get Customers</h4>
+                <p>Retrieve conference attendees</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📧</div>
+                <h4>Email Campaigns</h4>
+                <p>Personalized follow-up emails</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h4>Monitor Responses</h4>
+                <p>Track customer engagement</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h4>AI Powered</h4>
+                <p>Intelligent conversations</p>
+            </div>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message system">
+                🤖 Conference Follow-up Agent is initializing...
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Ask me to help with conference follow-up..." disabled>
+            <button id="sendButton" disabled>Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const status = document.getElementById('status');
+
+        let agentReady = false;
+
+        // Simulate agent startup
+        setTimeout(() => {
+            status.textContent = '✅ Agent Online';
+            status.className = 'status online';
+            messageInput.disabled = false;
+            sendButton.disabled = false;
+            agentReady = true;
+            
+            addSystemMessage('✅ Agent is now online and ready to help with conference follow-ups!');
+            addAgentMessage('Hello! I\'m your Conference Follow-up Agent. I can help you:\n\n• Get customer lists from conferences\n• Create personalized email campaigns\n• Send follow-up emails\n• Monitor response rates\n\nWhat would you like me to help you with?');
+        }, 2000);
+
+        function addMessage(content, type, delay = 0) {
+            setTimeout(() => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+                messageDiv.textContent = content;
+                chatContainer.appendChild(messageDiv);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, delay);
+        }
+
+        function addUserMessage(content) {
+            addMessage(content, 'user');
+        }
+
+        function addAgentMessage(content) {
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message agent';
+            typingDiv.innerHTML = '<span class="typing">🤖 Agent is typing...</span>';
+            chatContainer.appendChild(typingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Remove typing indicator and add actual message
+            setTimeout(() => {
+                typingDiv.remove();
+                addMessage(content, 'agent');
+            }, 1500);
+        }
+
+        function addSystemMessage(content) {
+            addMessage(content, 'system');
+        }
+
+        function handleUserMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('conference') || lowerMessage.includes('follow up') || lowerMessage.includes('customers')) {
+                addAgentMessage('Perfect! I\'ll help you with conference follow-up. Let me run the complete campaign for you...');
+                
+                setTimeout(() => {
+                    addSystemMessage('🔄 Running Conference Follow-up Campaign...');
+                }, 1000);
+                
+                setTimeout(() => {
+                    addSystemMessage('📋 Step 1: Getting customers from Cloudflare Connect 2024...');
+                }, 2000);
+                
+                setTimeout(() => {
+                    addSystemMessage('✅ Found 4 customers: John Smith (TechCorp), Sarah Johnson (StartupXYZ), Mike Chen (Enterprise Inc), Emily Davis (RetailGiant)');
+                }, 3000);
+                
+                setTimeout(() => {
+                    addSystemMessage('📧 Step 2: Creating personalized email templates...');
+                }, 4000);
+                
+                setTimeout(() => {
+                    addSystemMessage('✅ Email templates created with Cloudflare benefits and personalization');
+                }, 5000);
+                
+                setTimeout(() => {
+                    addSystemMessage('📤 Step 3: Sending campaign emails...');
+                }, 6000);
+                
+                setTimeout(() => {
+                    addSystemMessage('📧 Sent to john@techcorp.com');
+                    addSystemMessage('📧 Sent to sarah@startup.com');
+                    addSystemMessage('📧 Sent to mike@enterprise.com');
+                    addSystemMessage('📧 Sent to emily@retail.com');
+                }, 7000);
+                
+                setTimeout(() => {
+                    addSystemMessage('✅ All 4 emails sent successfully!');
+                }, 8000);
+                
+                setTimeout(() => {
+                    addSystemMessage('📊 Step 4: Activating response monitoring...');
+                }, 9000);
+                
+                setTimeout(() => {
+                    addSystemMessage('✅ Response tracking is now active');
+                }, 10000);
+                
+                setTimeout(() => {
+                    addAgentMessage('🎉 Campaign completed successfully!\n\n📈 Results:\n• 4 customers contacted\n• 4 personalized emails sent\n• Response monitoring active\n• Ready for follow-up actions\n\nIs there anything else you\'d like me to help you with?');
+                }, 11000);
+                
+            } else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
+                addAgentMessage('I\'m your Conference Follow-up Agent! Here\'s what I can do:\n\n📋 **Customer Management**\n• Get lists of conference attendees\n• Store customer information and notes\n\n📧 **Email Campaigns**\n• Create personalized email templates\n• Send bulk follow-up emails\n• Track delivery status\n\n📊 **Analytics**\n• Monitor response rates\n• Track customer engagement\n• Generate follow-up recommendations\n\n🤖 **AI Features**\n• Intelligent conversation handling\n• Personalized content generation\n• Smart scheduling recommendations\n\nJust ask me to help with conference follow-up and I\'ll run the complete campaign for you!');
+            } else {
+                addAgentMessage('I\'m here to help with conference follow-up campaigns! Try asking me:\n\n• "Help me follow up with conference customers"\n• "Create a campaign for Cloudflare Connect 2024"\n• "What can you do?"\n\nI can handle the entire process from getting customer lists to sending personalized emails and monitoring responses.');
+            }
+        }
+
+        sendButton.addEventListener('click', () => {
+            const message = messageInput.value.trim();
+            if (message && agentReady) {
+                addUserMessage(message);
+                messageInput.value = '';
+                handleUserMessage(message);
+            }
+        });
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !sendButton.disabled) {
+                sendButton.click();
+            }
+        });
+
+        // Auto-focus input when agent is ready
+        setTimeout(() => {
+            if (agentReady) {
+                messageInput.focus();
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
